@@ -6,6 +6,8 @@
 class Product {
 private:
     // The Attributes that should not be changed by subclasses (read-only)
+    static int nextID;
+
     int productID;
     double price;
     int quantity;
@@ -16,7 +18,7 @@ protected:
 public:
     // Constructor
     Product();
-    Product(int id, std::string name, double price, int qty);
+    Product(std::string name, double price, int qty);
 
     // Destructor 
     virtual ~Product();
@@ -35,7 +37,7 @@ public:
 
 
     // Pure virtual functions (to be implemented by subclasses)
-    virtual void displayStatus() const = 0;
+    virtual void displayStatus(std::ostream& os) const = 0;
     virtual double calculateRisk() const = 0;
     virtual void applyDiscount(double percent) = 0;
 

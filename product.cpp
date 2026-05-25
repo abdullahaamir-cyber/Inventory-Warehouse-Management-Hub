@@ -1,10 +1,12 @@
 #include "product.h"
 #include <iostream>
 
-//Constructors 
-Product::Product() : productID(0), price(0.0), quantity(0), productName("Unknown") {}
+int Product::nextID = 100;
 
-Product::Product(int id,std::string name,double price,int qty) : productID(id), productName(name), price(price), quantity(qty) {}
+//Constructors 
+Product::Product() : productID(nextID++), price(0.0), quantity(0), productName("Unknown") {}
+
+Product::Product(std::string name,double price,int qty) : productID(nextID++), productName(name), price(price), quantity(qty) {}
 
 //Destructor
 Product::~Product() {}
@@ -46,10 +48,7 @@ double Product::calculateValue() const {
 
 //Operator overloading for output
 std::ostream& operator <<(std::ostream& os, const Product& p) {
-   os<<"ID: "<<p.productID<<"\n";
-   os<<"Name: "<<p.productName<<"\n";
-   os<<"Price: "<<p.price<<"\n";
-   os<<"Quantity: "<<p.quantity<<"\n";
+  p.displayStatus(os);
    return os;
 }
 
