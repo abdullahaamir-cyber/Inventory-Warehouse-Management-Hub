@@ -48,7 +48,7 @@ double Product::calculateValue() const {
 
 //Operator overloading for output
 std::ostream& operator <<(std::ostream& os, const Product& p) {
-  p.displayStatus(os);
+  p.displayStatus();
    return os;
 }
 

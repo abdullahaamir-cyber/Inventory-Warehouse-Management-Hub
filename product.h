@@ -37,7 +37,7 @@ public:
 
 
     // Pure virtual functions (to be implemented by subclasses)
-    virtual void displayStatus(std::ostream& os) const = 0;
+    virtual void displayStatus() const = 0;
     virtual double calculateRisk() const = 0;
     virtual void applyDiscount(double percent) = 0;
 
