@@ -1,12 +1,15 @@
-#include "product.h"
+#include "../include/product.h"
 #include <iostream>
+
+using namespace std;
+
 
 int Product::nextID = 100;
 
 //Constructors 
 Product::Product() : productID(nextID++), price(0.0), quantity(0), productName("Unknown") {}
 
-Product::Product(std::string name,double price,int qty) : productID(nextID++), productName(name), price(price), quantity(qty) {}
+Product::Product(string name,double price,int qty) : productID(nextID++), productName(name), price(price), quantity(qty) {}
 
 //Destructor
 Product::~Product() {}
@@ -24,20 +27,20 @@ int Product::getQuantity() const {
     return quantity;
 }
 
-std::string Product::getProductName() const {
+string Product::getProductName() const {
     return productName;
 }
 
 //Setters with Validation
 void Product::setPrice(double p) {
       if(p < 0)
-      throw std::invalid_argument("Price cannot be negative");
+      throw invalid_argument("Price cannot be negative");
       price = p;
 }
 
 void Product::setQuantity(int q) {
      if(q < 0)
-     throw std::invalid_argument("Quantity cannot be negative");
+     throw invalid_argument("Quantity cannot be negative");
      quantity = q;
 }
 
@@ -47,7 +50,7 @@ double Product::calculateValue() const {
 }
 
 //Operator overloading for output
-std::ostream& operator <<(std::ostream& os, const Product& p) {
+ostream& operator <<(ostream& os, const Product& p) {
   p.displayStatus();
    return os;
 }
