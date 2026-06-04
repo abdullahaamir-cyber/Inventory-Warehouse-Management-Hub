@@ -6,4 +6,4 @@ Members:
 3. Ashna 
 4. Ayesha 
 5. Rehan 
-6. Qazi 
+6. Qazi.
