@@ -2,7 +2,7 @@
 #define CONSOLE_UI_H
 
 #include <string>
-#include <vector>
+#include "DynamicArray.h"
 
 class ConsoleUI 
 {
@@ -35,12 +35,12 @@ class ConsoleUI
         static bool promptConfirm(const std::string& prompt);
 
         // Generic Menu Renderer
-        static int showMenu(const std::string& menuTitle, const std::vector<std::string>& options);
+        static int showMenu(const std::string& menuTitle, const DynamicArray<std::string>& options);
 
         // Advanced Table Alignment & Grid System
-        static void printTable(const std::vector<std::string>& headers, 
-                               const std::vector<int>& widths, 
-                               const std::vector<std::vector<std::string>>& rows);
+        static void printTable(const DynamicArray<std::string>& headers, 
+                               const DynamicArray<int>& widths, 
+                               const DynamicArray<DynamicArray<std::string>>& rows);
 
         // Double formatting helper
         static std::string formatDouble(double val);
