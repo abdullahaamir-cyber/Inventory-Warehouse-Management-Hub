@@ -17,6 +17,10 @@ public:
     ElectronicProduct& operator=(const ElectronicProduct& other);
 
     virtual void displayStatus() const override; 
+    virtual void checkExpiry() override;
+    virtual double calculateRisk() const override;
+    virtual void applyDiscount(double percentage) override;
+    virtual Product* clone() const override;
     void testHardware() const; // Added to match rubric spec
     
     // Getters for serialisation

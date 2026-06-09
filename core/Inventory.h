@@ -12,7 +12,7 @@ private:
     Product** slots; // Dynamic array of base pointers (Composition)
 
 public:
-    Inventory(std::string type, int maxCapacity = 5);
+    Inventory(std::string type = "General", int maxCapacity = 5);
     
     
     ~Inventory(); 

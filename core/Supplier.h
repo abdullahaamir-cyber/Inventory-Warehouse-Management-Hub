@@ -11,6 +11,7 @@ private:
     std::string contractTerms; // Added to match rubric spec
 
 public:
+    Supplier() : supplierID(""), companyName(""), performanceScore(100.0), contractTerms("Net 30") {}
     Supplier(std::string id, std::string name, std::string terms = "Net 30");
 
     void logRestockOrder(std::string itemName, int qty, double transactionCost);
