@@ -3,6 +3,7 @@
 
 #include <string>
 
+// Abstract base class representing a warehouse product
 class Product {
 protected: 
     std::string productID;
@@ -13,29 +14,27 @@ protected:
 
 public:
     Product(std::string id, std::string n, double price, int qty, std::string suppID);
-    
-    
     virtual ~Product() {}
 
-    
+    // Polymorphic operations
     virtual void displayStatus() const = 0;
     virtual void checkExpiry() = 0;
     virtual double calculateRisk() const = 0;
     virtual void applyDiscount(double percentage) = 0;
-    virtual Product* clone() const = 0; // Added for polymorphic deep copy
+    virtual Product* clone() const = 0;
 
     // Operator Overloading
     Product& operator+(int incomingQuantity);
     bool operator==(const Product& other) const;
 
-    // Getters / Utility
+    // Getters and helper methods
     std::string getID() const;
     std::string getName() const;
     int getQuantity() const;
-    double calculateValue() const; // Value = price * quantity
+    double calculateValue() const; // price * quantity
     void reduceQuantity(int amount);
     std::string getSupplier() const;
-    double getBasePrice() const; // To allow accessing base price in discount calculations
+    double getBasePrice() const;
 };
 
 #endif

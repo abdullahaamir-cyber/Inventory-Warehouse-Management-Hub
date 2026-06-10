@@ -4,6 +4,8 @@
 
 using namespace std;
 
+Date currentSystemDate(9, 6, 2026);
+
 int main() 
 {
     // Enable ANSI console formatting

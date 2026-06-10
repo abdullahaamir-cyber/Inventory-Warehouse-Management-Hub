@@ -12,10 +12,13 @@
 
 using namespace std;
 
+extern Date currentSystemDate;
+
 WarehouseManager::WarehouseManager() 
 {
     // Initialize system to default simulated date: 2026-06-09
     currentSystemDate = Date(9, 6, 2026);
+    ::currentSystemDate = currentSystemDate;
     
     // Set pending order dispatch to inactive
     pendingDispatch.isActive = false;
@@ -31,14 +34,14 @@ WarehouseManager::~WarehouseManager()
 
 void WarehouseManager::loadSystemData() 
 {
-    FileHandler::loadSuppliers(*this, "suppliers.txt");
-    FileHandler::loadProducts(*this, "products.txt");
+    FileHandler::loadSuppliers(*this, "data_files/suppliers.txt");
+    FileHandler::loadProducts(*this, "data_files/products.txt");
 }
 
 void WarehouseManager::saveSystemData() 
 {
-    FileHandler::saveSuppliers(*this, "suppliers.txt");
-    FileHandler::saveProducts(*this, "products.txt");
+    FileHandler::saveSuppliers(*this, "data_files/suppliers.txt");
+    FileHandler::saveProducts(*this, "data_files/products.txt");
 }
 
 void WarehouseManager::runMainMenu() 
@@ -68,6 +71,7 @@ void WarehouseManager::runMainMenu()
                     opts.push_back("Remove/Deregister Supplier");
                     opts.push_back("Process Supplier Restock Intake");
                     opts.push_back("Back to Main Dashboard");
+
                     int subChoice = ConsoleUI::showMenu("Supplier Operations Menu", opts);
                     
                     if (subChoice == 1) viewRegisteredSuppliers();
@@ -109,6 +113,7 @@ void WarehouseManager::runMainMenu()
                     opts.push_back("Apply Clearance Sale Batch Discounts");
                     opts.push_back("Change Simulated System Date");
                     opts.push_back("Back to Main Dashboard");
+                    
                     int subChoice = ConsoleUI::showMenu("Inventory Operations Menu", opts);
                     
                     if (subChoice == 1) viewGlobalInventoryStats();
@@ -190,7 +195,7 @@ void WarehouseManager::viewRegisteredSuppliers() const
     widths.push_back(20);
 
     DynamicArray<DynamicArray<string>> rows;
-    for (size_t i = 0; i < systemSuppliers.size(); ++i) 
+    for (int i = 0; i < systemSuppliers.size(); ++i) 
     {
         DynamicArray<string> row;
         row.push_back(systemSuppliers[i].getID());
@@ -212,7 +217,7 @@ void WarehouseManager::registerNewSupplier()
     string id = ConsoleUI::promptString("Enter Supplier ID (unique string tag)", true);
     
     // Check uniqueness
-    for (size_t i = 0; i < systemSuppliers.size(); ++i) 
+    for (int i = 0; i < systemSuppliers.size(); ++i) 
     {
         if (systemSuppliers[i].getID() == id) 
         {
@@ -250,7 +255,7 @@ void WarehouseManager::removeSupplier()
 
     string id = ConsoleUI::promptString("Enter ID of Supplier to remove", true);
     int targetIdx = -1;
-    for (size_t i = 0; i < systemSuppliers.size(); ++i) 
+    for (int i = 0; i < systemSuppliers.size(); ++i) 
     {
         if (systemSuppliers[i].getID() == id) 
         {
@@ -291,7 +296,7 @@ void WarehouseManager::processIncomingShipment()
 
     // Select Supplier
     DynamicArray<string> suppOpts;
-    for (size_t i = 0; i < systemSuppliers.size(); ++i) 
+    for (int i = 0; i < systemSuppliers.size(); ++i) 
     {
         suppOpts.push_back(systemSuppliers[i].getName() + " [" + systemSuppliers[i].getID() + "]");
     }
@@ -318,7 +323,7 @@ void WarehouseManager::processIncomingShipment()
     string pID = ConsoleUI::promptString("Enter Product ID Tag (must be unique)", true);
     
     // Check if Product ID already exists anywhere in local warehouse
-    for (size_t sec = 0; sec < localWarehouse.sections.size(); ++sec) 
+    for (int sec = 0; sec < localWarehouse.sections.size(); ++sec) 
     {
         for (int slot = 0; slot < localWarehouse.sections[sec].getCapacity(); ++slot) 
         {
@@ -409,8 +414,61 @@ void WarehouseManager::processIncomingShipment()
 void WarehouseManager::viewWarehouseLayout() const 
 {
     ConsoleUI::clearScreen();
-    ConsoleUI::printHeader("Warehouse Layout Visualizer Map");
-    cout << localWarehouse << endl;
+    ConsoleUI::printHeader("Warehouse 2D Top-View Grid Map");
+
+    cout << "\nFacility ID: " << localWarehouse.locationID << " | Storage Space: " << localWarehouse.totalSquareFootage << " sq. ft.\n";
+    ConsoleUI::printDivider();
+
+    for (int sec = 0; sec < localWarehouse.sections.size(); ++sec) 
+    {
+        const Inventory& section = localWarehouse.sections[sec];
+        string type = section.getSectionType();
+        
+        // Convert category type to uppercase for styling
+        for (auto &c : type) c = toupper(c);
+
+        cout << "  [AISLE " << sec << ": " << type << "]\n";
+        
+        // Render Top of the Storage Shelf Boxes
+        cout << "    RACK: ";
+        for (int slot = 0; slot < section.getCapacity(); ++slot) 
+        {
+            cout << "┌───────┐ ";
+        }
+        cout << "\n          ";
+
+        // Render Shelf Box Content containing Product SKU ID or empty space
+        for (int slot = 0; slot < section.getCapacity(); ++slot) 
+        {
+            Product* p = section.slots[slot];
+            if (p == nullptr) 
+            {
+                cout << "│  ---  │ ";
+            } 
+            else 
+            {
+                string itemID = p->getID();
+                if (itemID.length() > 5) {
+                    itemID = itemID.substr(0, 5);
+                } else if (itemID.length() < 5) {
+                    itemID.append(5 - itemID.length(), ' ');
+                }
+                cout << "│ " << itemID << " │ ";
+            }
+        }
+        cout << "\n          ";
+
+        // Render Bottom of the Storage Shelf Boxes
+        for (int slot = 0; slot < section.getCapacity(); ++slot) 
+        {
+            cout << "└───────┘ ";
+        }
+        cout << "\n\n";
+    }
+
+    ConsoleUI::printDivider();
+    cout << "LEGEND: [  ---  ] = Empty Shelf Space | [IDTag] = Occupied Shelf Slot with Product SKU\n";
+    ConsoleUI::printDivider();
     ConsoleUI::pause();
 }
 
@@ -427,11 +485,11 @@ void WarehouseManager::inspectSpecificSlot()
         return;
     }
 
-    int secIdx = ConsoleUI::promptInt("Enter Section Index (0-" + to_string(maxSecs - 1) + ")", 0, maxSecs - 1);
+    int secIdx = ConsoleUI::promptInt("Enter Section Index", 0, maxSecs - 1);
     Inventory& sec = localWarehouse.sections[secIdx];
 
     int maxSlots = sec.getCapacity();
-    int slotIdx = ConsoleUI::promptInt("Enter Shelf Slot Index (0-" + to_string(maxSlots - 1) + ")", 0, maxSlots - 1);
+    int slotIdx = ConsoleUI::promptInt("Enter Shelf Slot Index", 0, maxSlots - 1);
 
     Product* prod = sec.slots[slotIdx];
     if (prod == nullptr) 
@@ -498,8 +556,8 @@ void WarehouseManager::transferStock()
     if (maxSecs == 0) return;
 
     ConsoleUI::printInfo("Source shelf location:");
-    int srcSec = ConsoleUI::promptInt("Enter Source Section Index (0-" + to_string(maxSecs - 1) + ")", 0, maxSecs - 1);
-    int srcSlot = ConsoleUI::promptInt("Enter Source Slot (0-" + to_string(localWarehouse.sections[srcSec].getCapacity() - 1) + ")", 0, localWarehouse.sections[srcSec].getCapacity() - 1);
+    int srcSec = ConsoleUI::promptInt("Enter Source Section Index", 0, maxSecs - 1);
+    int srcSlot = ConsoleUI::promptInt("Enter Source Slot", 0, localWarehouse.sections[srcSec].getCapacity() - 1);
 
     Product* pSrc = localWarehouse.sections[srcSec].slots[srcSlot];
     if (pSrc == nullptr) 
@@ -510,8 +568,8 @@ void WarehouseManager::transferStock()
     }
 
     ConsoleUI::printInfo("Destination shelf location:");
-    int destSec = ConsoleUI::promptInt("Enter Destination Section Index (0-" + to_string(maxSecs - 1) + ")", 0, maxSecs - 1);
-    int destSlot = ConsoleUI::promptInt("Enter Destination Slot (0-" + to_string(localWarehouse.sections[destSec].getCapacity() - 1) + ")", 0, localWarehouse.sections[destSec].getCapacity() - 1);
+    int destSec = ConsoleUI::promptInt("Enter Destination Section Index", 0, maxSecs - 1);
+    int destSlot = ConsoleUI::promptInt("Enter Destination Slot", 0, localWarehouse.sections[destSec].getCapacity() - 1);
 
     // Swap pointers
     Product* pTemp = localWarehouse.sections[destSec].slots[destSlot];
@@ -538,7 +596,7 @@ void WarehouseManager::viewGlobalInventoryStats() const
     int grocCount = 0;
     int clothCount = 0;
 
-    for (size_t sec = 0; sec < localWarehouse.sections.size(); ++sec) 
+    for (int sec = 0; sec < localWarehouse.sections.size(); ++sec) 
     {
         const Inventory& currentSec = localWarehouse.sections[sec];
         totalCapacity += currentSec.getCapacity();
@@ -596,7 +654,7 @@ void WarehouseManager::runGlobalExpiryAudit()
 
     DynamicArray<DynamicArray<string>> rows;
 
-    for (size_t sec = 0; sec < localWarehouse.sections.size(); ++sec) 
+    for (int sec = 0; sec < localWarehouse.sections.size(); ++sec) 
     {
         Inventory& currentSec = localWarehouse.sections[sec];
         for (int slot = 0; slot < currentSec.getCapacity(); ++slot) 
@@ -667,7 +725,7 @@ void WarehouseManager::runRiskAssessment()
 
     DynamicArray<DynamicArray<string>> rows;
 
-    for (size_t sec = 0; sec < localWarehouse.sections.size(); ++sec) 
+    for (int sec = 0; sec < localWarehouse.sections.size(); ++sec) 
     {
         Inventory& currentSec = localWarehouse.sections[sec];
         for (int slot = 0; slot < currentSec.getCapacity(); ++slot) 
@@ -713,7 +771,7 @@ void WarehouseManager::executeSeasonalClearance()
     int maxSecs = localWarehouse.sections.size();
     if (maxSecs == 0) return;
 
-    int secIdx = ConsoleUI::promptInt("Enter Target Section Index to apply Clearance sale (0-" + to_string(maxSecs - 1) + ")", 0, maxSecs - 1);
+    int secIdx = ConsoleUI::promptInt("Enter Target Section Index to apply Clearance sale", 0, maxSecs - 1);
     double discount = ConsoleUI::promptDouble("Enter Discount Percentage to apply (e.g. 15.0)", 0.0);
 
     if (discount <= 0.0 || discount > 100.0) 
@@ -750,11 +808,12 @@ void WarehouseManager::changeSystemDate()
     
     ConsoleUI::printLabelValue("Current System simulated date is", currentSystemDate.toString());
 
-    int day = ConsoleUI::promptInt("Enter Simulated Calendar Day (1-31)", 1, 31);
-    int month = ConsoleUI::promptInt("Enter Simulated Calendar Month (1-12)", 1, 12);
-    int year = ConsoleUI::promptInt("Enter Simulated Calendar Year (2026-2035)", 2026, 2035);
+    int day = ConsoleUI::promptInt("Enter Simulated Calendar Day", 1, 31);
+    int month = ConsoleUI::promptInt("Enter Simulated Calendar Month", 1, 12);
+    int year = ConsoleUI::promptInt("Enter Simulated Calendar Year", 2026, 2035);
 
     currentSystemDate = Date(day, month, year);
+    ::currentSystemDate = currentSystemDate;
 
     ConsoleUI::printSuccess("System simulated date successfully set to: " + currentSystemDate.toString());
     ConsoleUI::pause();
@@ -776,10 +835,8 @@ void WarehouseManager::createDispatchOrder()
     
     // Search for product and verify stock availability
     Product* targetProduct = nullptr;
-    int targetSec = -1;
-    int targetSlot = -1;
 
-    for (size_t sec = 0; sec < localWarehouse.sections.size(); ++sec) 
+    for (int sec = 0; sec < localWarehouse.sections.size(); ++sec) 
     {
         for (int slot = 0; slot < localWarehouse.sections[sec].getCapacity(); ++slot) 
         {
@@ -787,8 +844,6 @@ void WarehouseManager::createDispatchOrder()
             if (p != nullptr && p->getID() == targetID) 
             {
                 targetProduct = p;
-                targetSec = sec;
-                targetSlot = slot;
                 break;
             }
         }
@@ -869,7 +924,7 @@ void WarehouseManager::viewPendingManifests()
         if (p->getQuantity() <= 0) 
         {
             // Find its slot and delete
-            for (size_t sec = 0; sec < localWarehouse.sections.size(); ++sec) 
+            for (int sec = 0; sec < localWarehouse.sections.size(); ++sec) 
             {
                 for (int slot = 0; slot < localWarehouse.sections[sec].getCapacity(); ++slot) 
                 {

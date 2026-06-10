@@ -1,8 +1,8 @@
 #ifndef TRANSACTION_LOG_H
 #define TRANSACTION_LOG_H
 
-#include <iostream>
 #include "DynamicArray.h"
+#include "ConsoleUI.h"
 #include <string>
 
 template <typename T>
@@ -20,22 +20,21 @@ public:
     }
 
     void printAuditTrail() const {
-        std::cout << "\n--- SYSTEM AUDIT TRAIL ---\n";
+        ConsoleUI::printHeader("System Audit Trail Log");
         if (actions.empty()) {
-            std::cout << "No logs recorded yet.\n";
+            ConsoleUI::printInfo("No transaction logs recorded yet in simulated memory.");
             return;
         }
-        for (size_t i = 0; i < actions.size(); i++) {
-            std::cout << "[" << timestamps[i] << "] ACTION: " << actions[i] << "\n";
+        for (int i = 0; i < actions.size(); i++) {
+            ConsoleUI::printLabelValue("[" + timestamps[i] + "] ACTION", actions[i]);
         }
     }
 
-    // <-- ADDED: Empties the DynamicArrays to support your "Clear Historical logs" option
     void clearLogs() {
         timestamps.clear();
         actions.clear();
         entities.clear();
-        std::cout << "[SYSTEM]: All historical logs have been permanently cleared.\n";
+        ConsoleUI::printSuccess("System database clearance complete: all transaction log trails cleared.");
     }
 };
 

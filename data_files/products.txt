@@ -1,0 +1,15 @@
+ELEC,E001,4K Smart LED TV,299.99,10,S001,24,Sony,220
+FRAG,F001,Glass Display Panel,60.25,3,S001,12,Sony,8,BubbleWrap
+ELEC,E002,Bluetooth Headset,49.99,12,S004,12,JBL,5
+FRAG,F002,Ceramic Heating Element,24.5,6,S004,6,Apex,9,Foam
+PERI,P001,Organic Milk Carton,3.5,15,S002,1,Dairy,2026-06-08,4
+PERI,P002,Fresh Strawberry Pack,4.99,8,S002,1,Fruit,2026-06-25,5
+PERI,P003,Yogurt Tub,2.2,18,S005,1,Dairy,2026-06-12,3.5
+PERI,P004,Premium Salmon Fillet,14.99,4,S005,1,Seafood,2026-06-10,-2
+NPER,N001,Canned Tomato Puree,1.99,25,S002,0,Canned,18,Medium
+NPER,N002,Whole Wheat Pasta,1.49,40,S005,0,Grains,24,None
+NPER,N003,Extra Virgin Olive Oil,8.99,15,S005,0,Oil,36,None
+NPER,N004,Instant Chicken Ramen,0.49,150,S005,0,Instant,12,High
+CLOT,C001,Thermal Winter Jacket,89.9,6,S003,L,Wool,Winter
+CLOT,C002,Denim Slim Jeans,39.99,22,S006,M,Cotton,AllSeason
+CLOT,C003,Cotton Summer T-Shirt,19.99,45,S006,S,Cotton,Summer

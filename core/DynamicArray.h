@@ -2,19 +2,18 @@
 #define DYNAMIC_ARRAY_H
 
 #include <stdexcept>
-#include <cstddef>
 
 template <typename T>
 class DynamicArray 
 {
 private:
     T* arr;
-    size_t arraySize;
-    size_t arrayCapacity;
+    int arraySize;
+    int arrayCapacity;
 
-    void resize(size_t newCapacity) {
+    void resize(int newCapacity) {
         T* temp = new T[newCapacity];
-        for (size_t i = 0; i < arraySize; i++) {
+        for (int i = 0; i < arraySize; i++) {
             temp[i] = arr[i];
         }
         delete[] arr;
@@ -25,7 +24,7 @@ private:
 public:
     DynamicArray() : arr(nullptr), arraySize(0), arrayCapacity(0) {}
 
-    DynamicArray(size_t initialSize) : arraySize(initialSize), arrayCapacity(initialSize) {
+    DynamicArray(int initialSize) : arraySize(initialSize), arrayCapacity(initialSize) {
         arr = new T[arrayCapacity];
     }
 
@@ -33,7 +32,7 @@ public:
     DynamicArray(const DynamicArray& other) : arraySize(other.arraySize), arrayCapacity(other.arrayCapacity) {
         if (arrayCapacity > 0) {
             arr = new T[arrayCapacity];
-            for (size_t i = 0; i < arraySize; i++) {
+            for (int i = 0; i < arraySize; i++) {
                 arr[i] = other.arr[i];
             }
         } else {
@@ -49,7 +48,7 @@ public:
             arrayCapacity = other.arrayCapacity;
             if (arrayCapacity > 0) {
                 arr = new T[arrayCapacity];
-                for (size_t i = 0; i < arraySize; i++) {
+                for (int i = 0; i < arraySize; i++) {
                     arr[i] = other.arr[i];
                 }
             } else {
@@ -79,11 +78,11 @@ public:
         }
     }
 
-    void erase(size_t index) {
-        if (index >= arraySize) {
+    void erase(int index) {
+        if (index < 0 || index >= arraySize) {
             throw std::out_of_range("Index out of bounds");
         }
-        for (size_t i = index; i < arraySize - 1; i++) {
+        for (int i = index; i < arraySize - 1; i++) {
             arr[i] = arr[i + 1];
         }
         arraySize--;
@@ -96,19 +95,19 @@ public:
         arrayCapacity = 0;
     }
 
-    size_t size() const { return arraySize; }
-    size_t capacity() const { return arrayCapacity; }
+    int size() const { return arraySize; }
+    int capacity() const { return arrayCapacity; }
     bool empty() const { return arraySize == 0; }
 
-    T& operator[](size_t index) {
-        if (index >= arraySize) {
+    T& operator[](int index) {
+        if (index < 0 || index >= arraySize) {
             throw std::out_of_range("Index out of bounds");
         }
         return arr[index];
     }
 
-    const T& operator[](size_t index) const {
-        if (index >= arraySize) {
+    const T& operator[](int index) const {
+        if (index < 0 || index >= arraySize) {
             throw std::out_of_range("Index out of bounds");
         }
         return arr[index];

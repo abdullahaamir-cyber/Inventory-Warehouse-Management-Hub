@@ -1,37 +1,38 @@
 #include "NonPerishable.h"
+#include "../core/ConsoleUI.h"
 #include <iostream>
 
 using namespace std;
 
-NonPerishable::NonPerishable(string id, string n, double price, int qty,
-    string suppID, bool refrigerated, string category,
-    int shelfLife, string preservatives)
-    : GroceryProduct(id, n, price, qty, suppID, refrigerated, category),
-      shelfLifeMonths(shelfLife),
-      preservativeLevel(preservatives)
-{}
+NonPerishable::NonPerishable(string id, string n, double price, int qty, string suppID, bool refrigerated, string category, int shelfLife, string preservatives)
+    : GroceryProduct(id, n, price, qty, suppID, refrigerated, category), shelfLifeMonths(shelfLife), preservativeLevel(preservatives) {}
 
-void NonPerishable::displayStatus() const {
+void NonPerishable::displayStatus() const 
+{
     GroceryProduct::displayStatus();
-    cout << "  Type       : Non-Perishable\n";
-    cout << "  Shelf Life : " << shelfLifeMonths << " months\n";
-    cout << "  Preservatives: " << preservativeLevel << "\n";
-    cout << "----------------------------------------\n";
+    ConsoleUI::printLabelValue("Storage Category", "Non-Perishable Goods");
+    ConsoleUI::printLabelValue("Expected Shelf Life", to_string(shelfLifeMonths) + " Months");
+    ConsoleUI::printLabelValue("Preservative Grade", preservativeLevel);
 }
 
-void NonPerishable::checkExpiry() {
-    if (shelfLifeMonths >= 12)
-        cout << "[OK] " << name << " has a long shelf life of "
-             << shelfLifeMonths << " months. No expiry concern.\n";
-    else if (shelfLifeMonths >= 3)
-        cout << "[NOTE] " << name << " has " << shelfLifeMonths
-             << " months shelf life. Monitor stock rotation.\n";
-    else
-        cout << "[ATTENTION] " << name << " has only " << shelfLifeMonths
-             << " months shelf life. Prioritize selling.\n";
+void NonPerishable::checkExpiry() 
+{
+    if (shelfLifeMonths >= 12) 
+    {
+        ConsoleUI::printSuccess("[OK] " + name + " has a long shelf life of " + to_string(shelfLifeMonths) + " months. No expiry concern.");
+    } 
+    else if (shelfLifeMonths >= 3) 
+    {
+        ConsoleUI::printInfo("[NOTE] " + name + " has " + to_string(shelfLifeMonths) + " months shelf life. Monitor stock rotation.");
+    } 
+    else 
+    {
+        ConsoleUI::printError("[ATTENTION] " + name + " has only " + to_string(shelfLifeMonths) + " months shelf life. Prioritize selling.");
+    }
 }
 
-string NonPerishable::getStorageInstructions() const {
+string NonPerishable::getStorageInstructions() const 
+{
     string instructions = "";
     instructions += "Category     : " + foodCategory + "\n";
     instructions += "Shelf Life   : " + to_string(shelfLifeMonths) + " months\n";
@@ -41,22 +42,25 @@ string NonPerishable::getStorageInstructions() const {
     return instructions;
 }
 
-double NonPerishable::calculateRisk() const {
-    // longer shelf life = lower risk
+double NonPerishable::calculateRisk() const 
+{
     if (shelfLifeMonths >= 12) return 0.1;
     if (shelfLifeMonths >= 6)  return 0.2;
     return 0.35;
 }
 
-void NonPerishable::applyDiscount(double percentage) {
-    if (percentage < 0 || percentage > 100) {
-        cout << "[ERROR] Invalid discount percentage.\n";
+void NonPerishable::applyDiscount(double percentage) 
+{
+    if (percentage < 0 || percentage > 100) 
+    {
+        ConsoleUI::printError("Invalid discount percentage.");
         return;
     }
     basePrice -= basePrice * (percentage / 100.0);
-    cout << "[DISCOUNT] " << name << " new price: Rs." << basePrice << "\n";
+    ConsoleUI::printSuccess("Discount applied to " + name + ". New price: $" + ConsoleUI::formatDouble(basePrice));
 }
 
-Product* NonPerishable::clone() const {
+Product* NonPerishable::clone() const 
+{
     return new NonPerishable(*this);
 }

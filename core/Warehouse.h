@@ -7,33 +7,36 @@
 #include "Inventory.h"
 #include "../modules/Product.h"
 
+// Facility containing multiple inventory sections
 class Warehouse {
-    friend class WarehouseManager; // Added to allow engine direct access to sections
+    friend class WarehouseManager;
+    friend class FileHandler;
 public:
     static const int MAX_SECTIONS = 4;
     static const int SECTION_CAPACITY = 5;
 
 private:
     std::string locationID;
-    double totalSquareFootage; // Added to match rubric spec
-    DynamicArray<Inventory> sections; // Aggregation of sections
+    double totalSquareFootage;
+    DynamicArray<Inventory> sections;
 
 public:
     Warehouse(std::string locID = "MAIN-FACILITY");
     
-    // Setup
+    // Allocates category sections (Electronics, Perishable, etc.)
     void initializeSections();
 
-    // Operations
+    // Core warehouse operations
     bool routeIncomingStock(Product* newProduct);
     double getGlobalValue() const;
     void findShortages() const;
     
     // Getters
     Inventory& getSection(int index);
+    const Inventory& getSection(int index) const;
     int getSectionCount() const;
 
-    // Operator Overloading: Prints the whole warehouse map
+    // prints the layout map to stream
     friend std::ostream& operator<<(std::ostream& os, const Warehouse& wh);
 };
 

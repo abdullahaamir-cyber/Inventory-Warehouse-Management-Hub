@@ -1,0 +1,6 @@
+S001,Sony Tech Corp,100,Net 30
+S002,Global Fresh Farms,95,Net 15
+S003,Premium Apparel Ltd,89,Net 60
+S004,Apex Electronics,82,Net 30
+S005,Nature's Harvest,91,Net 10
+S006,Vogue Weaves,75,Net 45

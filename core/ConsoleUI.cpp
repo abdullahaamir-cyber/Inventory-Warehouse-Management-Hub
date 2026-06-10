@@ -225,7 +225,7 @@ int ConsoleUI::showMenu(const string& menuTitle, const DynamicArray<string>& opt
     for (int i = 0; i < width - 2; ++i) cout << " ";
     cout << "│" << endl;
 
-    for (size_t i = 0; i < options.size(); ++i) 
+    for (int i = 0; i < options.size(); ++i) 
     {
         int textLen = 4 + to_string(i + 1).length() + options[i].length();
         
@@ -259,7 +259,7 @@ void ConsoleUI::printTable(const DynamicArray<string>& headers, const DynamicArr
     // Top border
     cout << SECONDARY_COLOR << BOLD;
     cout << "┌";
-    for (size_t i = 0; i < headers.size(); ++i) 
+    for (int i = 0; i < headers.size(); ++i) 
     {
         for (int j = 0; j < widths[i] + 2; ++j) cout << "─";
         if (i < headers.size() - 1) cout << "┬";
@@ -268,7 +268,7 @@ void ConsoleUI::printTable(const DynamicArray<string>& headers, const DynamicArr
 
     // Headers
     cout << "│";
-    for (size_t i = 0; i < headers.size(); ++i) 
+    for (int i = 0; i < headers.size(); ++i) 
     {
         cout << " " << BOLD << SECONDARY_COLOR << left << setw(widths[i]) << headers[i] << RESET << SECONDARY_COLOR << " │";
     }
@@ -276,7 +276,7 @@ void ConsoleUI::printTable(const DynamicArray<string>& headers, const DynamicArr
 
     // Divider separating headers and rows
     cout << "├";
-    for (size_t i = 0; i < headers.size(); ++i) 
+    for (int i = 0; i < headers.size(); ++i) 
     {
         for (int j = 0; j < widths[i] + 2; ++j) cout << "─";
         if (i < headers.size() - 1) cout << "┼";
@@ -284,10 +284,10 @@ void ConsoleUI::printTable(const DynamicArray<string>& headers, const DynamicArr
     cout << "┤" << endl;
 
     // Data rows
-    for (size_t r = 0; r < rows.size(); ++r) 
+    for (int r = 0; r < rows.size(); ++r) 
     {
         cout << "│";
-        for (size_t c = 0; c < headers.size(); ++c) 
+        for (int c = 0; c < headers.size(); ++c) 
         {
             string val = "";
             if (c < rows[r].size()) 
@@ -301,7 +301,7 @@ void ConsoleUI::printTable(const DynamicArray<string>& headers, const DynamicArr
 
     // Bottom border
     cout << "└";
-    for (size_t i = 0; i < headers.size(); ++i) 
+    for (int i = 0; i < headers.size(); ++i) 
     {
         for (int j = 0; j < widths[i] + 2; ++j) cout << "─";
         if (i < headers.size() - 1) cout << "┴";
